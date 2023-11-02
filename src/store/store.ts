@@ -4,6 +4,7 @@ import AuthService from "../service/AuthService";
 import axios from "axios";
 import { AuthResponse } from "../models/response/AuthResponse";
 import { API_URL } from "../api/axios";
+import toast from "react-hot-toast";
 
 export default class Store {
   user = {} as IUser;
@@ -35,6 +36,7 @@ export default class Store {
       this.setUser(response.data.user);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
+      toast.error(e.response?.data?.message);
       console.log(e.response?.data?.message);
     }
   }
@@ -48,6 +50,7 @@ export default class Store {
       this.setUser(response.data.user);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
+      toast.error(e.response?.data?.message);
       console.log(e.response?.data?.message);
     }
   }
@@ -61,6 +64,7 @@ export default class Store {
       this.setUser({} as IUser);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
+      toast.error(e.response?.data?.message);
       console.log(e.response?.data?.message);
     }
   }
@@ -77,6 +81,7 @@ export default class Store {
       this.setUser(response.data.user);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
+      toast.error(e.response?.data?.message);
       console.log(e.response?.data?.message);
     } finally {
       this.setLoading(false);

@@ -1,0 +1,80 @@
+/* .form__container {
+  width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.input__field {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.input__field--error {
+  border-color: #ff0000;
+}
+
+.error__message {
+  color: #ff0000;
+  margin-bottom: 15px;
+}
+
+.submit__button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submit__button:hover {
+  background-color: #45a049;
+} */
+
+/* .ant-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-row {
+  flex-direction: column;
+}
+
+.ant-input {
+}
+
+.ant-input:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.ant-input.ant-input-error {
+  border-color: #ff4d4f;
+}
+
+.ant-btn {
+  font-size: 16px;
+}
+
+
+.ant-btn:hover {
+  background-color: #45a049;
+}
+
+
+.error__message {
+  color: #ff4d4f;
+  margin-bottom: 15px;
+} */
