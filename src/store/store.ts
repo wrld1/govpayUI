@@ -37,7 +37,7 @@ export default class Store {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       toast.error(e.response?.data?.message);
-      console.log(e.response?.data?.message);
+      throw new Error(e.response?.data?.message);
     }
   }
 
@@ -51,7 +51,7 @@ export default class Store {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       toast.error(e.response?.data?.message);
-      console.log(e.response?.data?.message);
+      throw new Error(e.response?.data?.message);
     }
   }
 

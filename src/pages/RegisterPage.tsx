@@ -1,7 +1,11 @@
 import RegisterForm from "../components/RegisterForm";
 
 function RegisterPage() {
-  return <RegisterForm />;
+  return (
+    <div className="wrapper">
+      <RegisterForm />
+    </div>
+  );
 }
 
 export default RegisterPage;

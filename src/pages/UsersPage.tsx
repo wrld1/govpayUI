@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { IUser } from "../models/IUser";
 import { Context } from "../main";
 import UserService from "../service/UserService";
+import Header from "../components/Header";
+import AdBanner from "../components/AdBanner";
 
 function UsersPage() {
   const { store } = useContext(Context);
@@ -27,7 +29,9 @@ function UsersPage() {
   }
 
   return (
-    <div>
+    <div className="w-screen h-screen">
+      <Header />
+      <AdBanner />
       <h1>
         {store.isAuth
           ? `Пользователь авторизован ${store.user.email}`
