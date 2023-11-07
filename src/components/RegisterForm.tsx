@@ -1,26 +1,45 @@
 import { FC, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../main";
-import { Form, Input, Button } from "antd";
 import "../styles/Form.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { z, ZodType } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface FormValues {
+type FormData = {
   email: string;
   password: string;
-  confirm: string;
-}
+  confirmPassword: string;
+};
 
 const RegisterForm: FC = () => {
   const { store } = useContext(Context);
-  const [form] = Form.useForm();
-
   const navigate = useNavigate();
 
-  const onFinish = (values: FormValues) => {
-    console.log("Received values of form: ", values);
-    const { email, password } = values;
+  const schema: ZodType<FormData> = z
+    .object({
+      email: z.string().email(),
+      password: z.string().min(5).max(20),
+      confirmPassword: z.string().min(5).max(20),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const submitData = (data: FormData) => {
+    console.log("IT WORKED", data);
+    const { email, password } = data;
 
     store
       .registration(email, password)
@@ -33,18 +52,6 @@ const RegisterForm: FC = () => {
         console.log(error.response?.data?.message);
       });
   };
-
-  //   const handleRegistration = () => {
-  //     if (!email) {
-  //       setEmailError("Email is required");
-  //       return;
-  //     }
-  //     if (!password) {
-  //       setPasswordError("Password is required");
-  //       return;
-  //     }
-  //     store.registration(email, password);
-  //   };
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -59,83 +66,65 @@ const RegisterForm: FC = () => {
         </h2>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <Form
-          form={form}
-          name="register"
-          layout={"vertical"}
-          onFinish={onFinish}
-          initialValues={{ remember: true }}
-          className="w-140"
-          //   scrollToFirstError
+      <div className="mx-auto w-96">
+        <form
+          className="space-y-5 flex flex-col  max-w-xs mx-auto"
+          onSubmit={handleSubmit(submitData)}
         >
-          <Form.Item
-            name="email"
-            label="E-mail"
-            rules={[
-              {
-                type: "email",
-                message: "Невірно введений E-mail!",
-              },
-              {
-                required: true,
-                message: "Будь ласка, введіть ваш E-mail!",
-              },
-            ]}
-          >
-            <Input className="py-1" />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[
-              {
-                required: true,
-                message: "Будь ласка, введіть ваш пароль!",
-              },
-            ]}
-            hasFeedback
-          >
-            <Input.Password className="py-1" />
-          </Form.Item>
-
-          <Form.Item
-            name="confirm"
-            label="Confirm Password"
-            dependencies={["password"]}
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: "Будь ласка, підтвердіть пароль!",
-              },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Паролі що ви ввели не співпадають!")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password className="py-1" />
-          </Form.Item>
-
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="rounded-md bg-indigo-600 px-3  text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 block my-0"
-              style={{ width: "100%" }}
+          <div className="form-control w-full flex flex-col gap-2">
+            <label className="label">
+              <span className="label-text">Введіть вашу пошту</span>
+              {errors.email && (
+                <span className="label-text-alt text-red-600">
+                  {" "}
+                  {errors.email.message}
+                </span>
+              )}
+            </label>
+            <input
+              type="email"
+              {...register("email")}
+              placeholder="yourmail@mail.com"
+              className="input input-bordered w-full border-purple-600"
+            />
+            <label className="label">
+              <span className="label-text">Введіть ваш пароль</span>
+              {errors.password && (
+                <span className="label-text-alt text-red-600">
+                  {" "}
+                  {errors.password.message}
+                </span>
+              )}
+            </label>
+            <input
+              type="password"
+              placeholder="asd2@21"
+              {...register("password")}
+              className="input input-bordered w-full border-purple-600"
+            />
+            <label className="label">
+              <span className="label-text">Підтвердіть ваш пароль</span>
+              {errors.confirmPassword && (
+                <span className="label-text-alt text-red-600">
+                  {" "}
+                  {errors.confirmPassword.message}
+                </span>
+              )}
+            </label>
+            <input
+              type="password"
+              placeholder="asd2@21"
+              {...register("confirmPassword")}
+              className="input input-bordered w-full border-purple-600"
+            />
+            <button
+              type="submit"
+              className="btn btn-primary mt-2 border-purple-600"
             >
-              Register
-            </Button>
-          </Form.Item>
-        </Form>
+              Зареєструватись
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

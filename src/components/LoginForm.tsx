@@ -1,47 +1,51 @@
 import { FC, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../main";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input } from "antd";
 import "../styles/Form.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { z, ZodType } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface FormValues {
+type FormData = {
   email: string;
   password: string;
-}
+};
 
 const LoginForm: FC = () => {
   const { store } = useContext(Context);
-
   const navigate = useNavigate();
 
-  const onFinish = (values: FormValues) => {
-    console.log("Received values of form: ", values);
-    const { email, password } = values;
+  const schema: ZodType<FormData> = z.object({
+    email: z.string().email(),
+    password: z.string().min(5).max(20),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const submitData = (data: FormData) => {
+    console.log("IT WORKED", data);
+    const { email, password } = data;
 
     store
       .login(email, password)
       .then(() => {
         navigate("/users");
+        toast.success("Успішно авторизовано");
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((error: any) => {
         toast.error(error.response?.data?.message);
+        console.log(error.response?.data?.message);
       });
   };
-
-  // const handleLogin = () => {
-  //   if (!email) {
-  //     setEmailError("Email is required");
-  //     return;
-  //   }
-  //   if (!password) {
-  //     setPasswordError("Password is required");
-  //     return;
-  //   }
-  // };
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -56,57 +60,50 @@ const LoginForm: FC = () => {
         </h2>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <Form
-          name="normal_login"
-          className="login-form"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          style={{
-            maxWidth: 600,
-          }}
+      <div className="mx-auto w-96">
+        <form
+          className="space-y-5 flex flex-col  max-w-xs mx-auto"
+          onSubmit={handleSubmit(submitData)}
         >
-          <Form.Item
-            name="email"
-            rules={[{ required: true, message: "Please input your Email!" }]}
-          >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon py-2" />}
-              placeholder="Email"
+          <div className="form-control w-full flex flex-col gap-2">
+            <label className="label">
+              <span className="label-text">Введіть вашу пошту</span>
+              {errors.email && (
+                <span className="label-text-alt text-red-600">
+                  {" "}
+                  {errors.email.message}
+                </span>
+              )}
+            </label>
+            <input
+              type="email"
+              {...register("email")}
+              placeholder="yourmail@mail.com"
+              className="input input-bordered w-full border-purple-600"
             />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Please input your Password!" }]}
-          >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon py-2" />}
+            <label className="label">
+              <span className="label-text">Введіть ваш пароль</span>
+              {errors.password && (
+                <span className="label-text-alt text-red-600">
+                  {" "}
+                  {errors.password.message}
+                </span>
+              )}
+            </label>
+            <input
               type="password"
-              placeholder="Password"
+              placeholder="********"
+              {...register("password")}
+              className="input input-bordered w-full border-purple-600"
             />
-          </Form.Item>
-          <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
-            <a className="login-form-forgot" href="">
-              Forgot password
-            </a>
-          </Form.Item>
-          <Form.Item>
-            <div className="flex gap-2  items-center">
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button rounded-md bg-indigo-600 px-3  text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 block my-0"
-              >
-                Log in
-              </Button>
-              Або <a href="/sign-up">зареєструватися зараз!</a>
-            </div>
-          </Form.Item>
-        </Form>
+            <button
+              type="submit"
+              className="btn btn-primary mt-2 border-purple-600"
+            >
+              Увійти
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
