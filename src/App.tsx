@@ -6,6 +6,7 @@ function App() {
   return (
     <>
       <Toaster
+        position="top-left"
         toastOptions={{
           success: {
             style: {

@@ -1,6 +1,7 @@
 import "./index.css";
 import { createContext } from "react";
 import ReactDOM from "react-dom/client";
+import { NextUIProvider } from "@nextui-org/react";
 import App from "./App.tsx";
 import Store from "./store/store.ts";
 
@@ -20,6 +21,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       store,
     }}
   >
-    <App />
+    <NextUIProvider>
+      <App />
+    </NextUIProvider>
   </Context.Provider>
 );
