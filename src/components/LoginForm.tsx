@@ -1,5 +1,4 @@
-import "../styles/Form.css";
-import { FC, useContext, useState } from "react";
+import { FC, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../main";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +7,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../models/validationSchemas";
 import { Button, Checkbox, Input } from "@nextui-org/react";
-import { EyeSlashFilledIcon } from "../assets/icons/EyeSlashFilledIcon";
-import { EyeFilledIcon } from "../assets/icons/EyeFilledIcon";
+
+import PasswordInput from "./PasswordInput";
 
 type FormData = {
   email: string;
@@ -17,7 +16,6 @@ type FormData = {
 };
 
 const LoginForm: FC = () => {
-  const [isPassVisible, setIsPassVisible] = useState(false);
   const { store } = useContext(Context);
   const navigate = useNavigate();
 
@@ -47,7 +45,7 @@ const LoginForm: FC = () => {
   };
 
   return (
-    <div className="flex min-h-full  flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex min-h-full  flex-col justify-center px-6 py-6 lg:px-8">
       <div className="mx-auto w-96">
         <form
           className="space-y-5 flex flex-col  max-w-xs mx-auto "
@@ -61,43 +59,20 @@ const LoginForm: FC = () => {
               variant="bordered"
               isInvalid={errors.email && true}
               errorMessage={errors.email && errors.email.message}
-              classNames={{
-                inputWrapper: [
-                  "focus:border-[#50C878]",
-                  "bg-white",
-                  "group-data-[focused=true]:border-[#50C878]",
-                ],
-              }}
+              classNames={{ inputWrapper: ["bg-white"] }}
             />
-            <Input
+            <PasswordInput
               label="Пароль"
-              {...register("password")}
-              variant="bordered"
-              className="max-w-xs focus:border-opacity-50"
+              register={register("password")}
               isInvalid={errors.password && true}
-              errorMessage={errors.password && errors.password.message}
-              labelPlacement="inside"
-              endContent={
-                <button
-                  className="focus:outline-none self-center"
-                  type="button"
-                  onClick={() => setIsPassVisible(!isPassVisible)}
-                >
-                  {isPassVisible ? (
-                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  ) : (
-                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  )}
-                </button>
-              }
-              type={isPassVisible ? "text" : "password"}
+              error={errors.password && errors.password.message}
             />
             <Checkbox size="md" className="checked:bg-[#50C878]">
               Запам'ятати мене
             </Checkbox>
             <Button
               type="submit"
-              className="bg-[#50C878] hover:border-[1px] border-green-900 font-semibold uppercase"
+              className="bg-[#50C878] hover:border-[1px] border-green-900 font-semibold uppercase text-[#202020] text-base shadow-lg"
               isLoading={store.isLoading}
             >
               Увійти

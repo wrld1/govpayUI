@@ -182,7 +182,7 @@ import { Logo } from "../assets/images/Logo";
 
 export default function App() {
   return (
-    <Navbar isBordered isBlurred={false} className="bg-[#213363] text-white">
+    <Navbar isBordered isBlurred={false} className="bg-[#3A5BC7] text-white">
       <NavbarBrand>
         <Logo />
         <p className="font-bold text-inherit">ACME</p>

@@ -1,14 +1,12 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../main";
-import "../styles/Form.css";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registrationSchema } from "../models/validationSchemas";
-import { Button, Input } from "@nextui-org/react";
-import { EyeFilledIcon } from "../assets/icons/EyeFilledIcon";
-import { EyeSlashFilledIcon } from "../assets/icons/EyeSlashFilledIcon";
+import { Button, Input, Link } from "@nextui-org/react";
+import PasswordInput from "./PasswordInput";
 
 type FormData = {
   email: string;
@@ -17,8 +15,6 @@ type FormData = {
 };
 
 const RegisterForm: FC = () => {
-  const [isPassVisible, setIsPassVisible] = useState(false);
-  const [isConfirmPassVisible, setIsConfirmPassVisible] = useState(false);
   const { store } = useContext(Context);
   const navigate = useNavigate();
 
@@ -46,7 +42,7 @@ const RegisterForm: FC = () => {
   };
 
   return (
-    <div className="flex min-h-full  flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex min-h-full  flex-col justify-center px-6 py-6 lg:px-8">
       <div className="mx-auto w-96">
         <form
           className="space-y-5 flex flex-col  max-w-xs mx-auto "
@@ -54,6 +50,7 @@ const RegisterForm: FC = () => {
         >
           <div className="w-full flex flex-col gap-6">
             <Input
+              classNames={{ inputWrapper: ["bg-white"] }}
               type="email"
               label="Email"
               {...register("email")}
@@ -61,57 +58,33 @@ const RegisterForm: FC = () => {
               isInvalid={errors.email && true}
               errorMessage={errors.email && errors.email.message}
             />
-            <Input
+            <PasswordInput
               label="Пароль"
-              {...register("password")}
-              variant="bordered"
+              register={register("password")}
               isInvalid={errors.password && true}
-              errorMessage={errors.password && errors.password.message}
-              labelPlacement="inside"
-              endContent={
-                <button
-                  className="focus:outline-none self-center"
-                  type="button"
-                  onClick={() => setIsPassVisible(!isPassVisible)}
-                >
-                  {isPassVisible ? (
-                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  ) : (
-                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  )}
-                </button>
-              }
-              type={isPassVisible ? "text" : "password"}
-              className="max-w-xs"
+              error={errors.password && errors.password.message}
             />
-            <Input
+            <PasswordInput
               label="Підтвердіть пароль"
-              {...register("confirmPassword")}
-              variant="bordered"
+              register={register("confirmPassword")}
               isInvalid={errors.confirmPassword && true}
-              errorMessage={
-                errors.confirmPassword && errors.confirmPassword.message
-              }
-              labelPlacement="inside"
-              endContent={
-                <button
-                  className="focus:outline-none self-center"
-                  type="button"
-                  onClick={() => setIsConfirmPassVisible(!isConfirmPassVisible)}
-                >
-                  {isConfirmPassVisible ? (
-                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  ) : (
-                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  )}
-                </button>
-              }
-              type={isConfirmPassVisible ? "text" : "password"}
-              className="max-w-xs "
+              error={errors.confirmPassword && errors.confirmPassword.message}
             />
+            <div className="flex justify-start items-center gap-1">
+              <span className="inline-block">Вже маєте акаунт?</span>
+              <Link
+                isBlock
+                showAnchorIcon
+                href="/sign-in"
+                // className="text-links"
+                color="primary"
+              >
+                Увійти
+              </Link>
+            </div>
             <Button
               type="submit"
-              className="bg-[#50C878] hover:border-[1px] border-green-900 font-semibold uppercase"
+              className="bg-[#50C878] hover:border-[1px] border-green-900 font-semibold uppercase shadow-lg text-base"
               isLoading={store.isLoading}
             >
               Зареєструватись
